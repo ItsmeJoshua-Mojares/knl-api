@@ -21,7 +21,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
 
-  - type: pgsql
+  - type: postgresql
     name: knl-api-db
     plan: free
     ipAllowList: []
