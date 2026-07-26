@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: knl-api
+    runtime: php
+    plan: free
+    buildCommand: composer install --no-dev --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan storage:link --force
+    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        value: https://knl-api.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: FRONTEND_URL
+        value: https://knlatelier.com
+      - key: APP_KEY
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+
+  - type: pgsql
+    name: knl-api-db
+    plan: free
+    ipAllowList: []
