@@ -1,10 +1,8 @@
 services:
   - type: web
     name: knl-api
-    runtime: php
+    runtime: docker
     plan: free
-    buildCommand: composer install --no-dev --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan storage:link --force
-    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
     envVars:
       - key: APP_ENV
         value: production
