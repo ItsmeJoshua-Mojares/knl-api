@@ -17,7 +17,7 @@ services:
           name: knl-api-db
           property: connectionString
       - key: FRONTEND_URL
-        value: https://knlatelier.com
+        value: https://knl-atelier.netlify.app
       - key: APP_KEY
         generateValue: true
       - key: JWT_SECRET
