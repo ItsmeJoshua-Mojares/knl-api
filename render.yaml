@@ -20,6 +20,12 @@ services:
           property: connectionString
       - key: FRONTEND_URL
         value: https://knl-atelier.netlify.app
+      - key: CLOUDINARY_CLOUD_NAME
+        value: tn2g2vcs
+      - key: CLOUDINARY_API_KEY
+        value: "765552648917614"
+      - key: CLOUDINARY_API_SECRET
+        value: UJpncHTKLBOjGyCeWKQfXEYTw7E
       - key: APP_KEY
         generateValue: true
       - key: JWT_SECRET
