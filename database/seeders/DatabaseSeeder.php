@@ -139,6 +139,7 @@ class DatabaseSeeder extends Seeder
                 'sku'           => 'SSK033',
                 'ref_number'    => 'SSK033',
                 'caliber_number'=> '4R34',
+                'short_desc'    => 'Brand new, rotated bezel, 100% authentic, and automatic.',
                 'price'         => 22499.00,
                 'is_featured'   => true,
                 'is_bestseller' => false,
@@ -180,7 +181,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            Product::firstOrCreate(['sku' => $product['sku']], $product);
+            Product::firstOrCreate(['slug' => $product['slug']], $product);
         }
 
         // ── Coupons ──────────────────────────────────────────
