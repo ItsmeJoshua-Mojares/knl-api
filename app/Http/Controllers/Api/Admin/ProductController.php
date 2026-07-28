@@ -130,8 +130,8 @@ class ProductController extends Controller
         $product->update($validated);
 
         $changed = array_diff_assoc(
-            array_map('strval', $validated),
-            array_map('strval', $before)
+            array_map(fn($v) => is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : (string) $v, $validated),
+            array_map(fn($v) => is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : (string) $v, $before)
         );
 
         if (!empty($changed)) {
