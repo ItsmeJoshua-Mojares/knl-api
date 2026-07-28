@@ -122,6 +122,8 @@ Route::middleware(['auth:api', 'role:admin,super_admin', 'log.admin'])->prefix('
     Route::post('products/bulk-delete',         [\App\Http\Controllers\Api\Admin\ProductController::class, 'bulkDelete']);
     Route::put('products/bulk-update-status',   [\App\Http\Controllers\Api\Admin\ProductController::class, 'bulkUpdateStatus']);
     Route::post('products/{product}/adjust-stock', [\App\Http\Controllers\Api\Admin\ProductController::class, 'adjustStock']);
+    Route::put('products/{id}/restore',         [\App\Http\Controllers\Api\Admin\ProductController::class, 'restore']);
+    Route::delete('products/{id}/force-delete', [\App\Http\Controllers\Api\Admin\ProductController::class, 'forceDelete']);
 
     // Categories CRUD
     Route::apiResource('categories', \App\Http\Controllers\Api\Admin\CategoryController::class);

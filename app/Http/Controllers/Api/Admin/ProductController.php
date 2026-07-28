@@ -48,6 +48,11 @@ class ProductController extends Controller
         $query = Product::with(['category', 'brand', 'primaryImage'])
             ->withCount('reviews');
 
+        // Support viewing trashed products
+        if ($request->boolean('trashed')) {
+            $query->onlyTrashed();
+        }
+
         // Filters
         if ($request->filled('search')) {
             $term = $request->search;
@@ -242,6 +247,44 @@ class ProductController extends Controller
         });
     }
 
+    /**
+     * PUT /api/admin/products/{product}/restore
+     *
+     * Restore a soft-deleted product.
+     */
+    public function restore(int $id): JsonResponse
+    {
+        $product = Product::onlyTrashed()->findOrFail($id);
+        $product->restore();
+
+        ActivityLog::record($product, 'restored', ['name' => $product->name]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product restored successfully.',
+            'data'    => ['product' => $product],
+        ]);
+    }
+
+    /**
+     * DELETE /api/admin/products/{product}/force-delete
+     *
+     * Permanently delete a product (cannot be undone).
+     */
+    public function forceDelete(int $id): JsonResponse
+    {
+        $product = Product::onlyTrashed()->findOrFail($id);
+        $name = $product->name;
+        $product->forceDelete();
+
+        ActivityLog::record($product, 'force_deleted', ['name' => $name]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product permanently deleted.',
+        ]);
+    }
+
     // ── Helpers ───────────────────────────────────────────────
 
     private function validationRules(?int $productId = null): array
@@ -250,7 +293,7 @@ class ProductController extends Controller
             'category_id'        => 'required|exists:categories,id',
             'brand_id'           => 'nullable|exists:brands,id',
             'name'               => 'required|string|max:255',
-            'sku'                => ['required', 'string', 'max:80', Rule::unique('products', 'sku')->ignore($productId)],
+            'sku'                => ['required', 'string', 'max:80', Rule::unique('products', 'sku')->withoutTrashed()->ignore($ProductId)],
             'ref_number'         => 'nullable|string|max:80',
             'caliber_number'     => 'nullable|string|max:40',
             'short_desc'         => 'nullable|string|max:500',
@@ -276,7 +319,7 @@ class ProductController extends Controller
         $slug = $base;
         $i    = 1;
 
-        while (\DB::table('products')->where('slug', $slug)->exists()) {
+        while (\DB::table('products')->where('slug', $slug)->whereNull('deleted_at')->exists()) {
             $slug = "{$base}-{$i}";
             $i++;
         }
