@@ -98,6 +98,7 @@ class ProductController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $request->merge(['brand_id' => $request->input('brand_id') ?: null]);
         $validated = $request->validate($this->validationRules());
 
         $product = Product::create([
@@ -119,6 +120,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product): JsonResponse
     {
+        $request->merge(['brand_id' => $request->input('brand_id') ?: null]);
         $rules = $this->validationRules($product->id);
         $validated = $request->validate($rules);
 
@@ -293,7 +295,7 @@ class ProductController extends Controller
             'category_id'        => 'required|exists:categories,id',
             'brand_id'           => 'nullable|exists:brands,id',
             'name'               => 'required|string|max:255',
-            'sku'                => ['required', 'string', 'max:80', Rule::unique('products', 'sku')->withoutTrashed()->ignore($ProductId)],
+            'sku'                => ['required', 'string', 'max:80', Rule::unique('products', 'sku')->withoutTrashed()->ignore($productId)],
             'ref_number'         => 'nullable|string|max:80',
             'caliber_number'     => 'nullable|string|max:40',
             'short_desc'         => 'nullable|string|max:500',
