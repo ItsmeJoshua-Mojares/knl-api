@@ -70,13 +70,6 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand): JsonResponse
     {
-        if ($brand->products()->exists()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cannot delete a brand that still has products.',
-            ], 422);
-        }
-
         $name = $brand->name;
         $brand->delete();
         ActivityLog::record($brand, 'deleted', ['name' => $name]);

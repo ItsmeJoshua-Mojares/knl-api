@@ -52,6 +52,9 @@ Route::prefix('categories')->name('categories.')->group(function () {
     Route::get('{slug}/products', [CategoryController::class, 'products'])->name('products');
 });
 
+// Brands (public)
+Route::get('brands', [\App\Http\Controllers\Api\BrandController::class, 'index'])->name('brands.index');
+
 // Reviews (public read)
 Route::get('products/{product}/reviews', [ReviewController::class, 'index']);
 
