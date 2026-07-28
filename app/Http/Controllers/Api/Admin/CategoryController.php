@@ -75,7 +75,7 @@ class CategoryController extends Controller
 
     public function destroy(Category $category): JsonResponse
     {
-        if ($category->products()->exists()) {
+        if ($category->products()->withTrashed()->exists()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cannot delete a category that still has products. Reassign products first.',
