@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\CouponController;
+use App\Http\Controllers\Api\NewsletterController;
 
 // ── Public routes (no auth required) ────────────────────────
 
@@ -57,6 +58,12 @@ Route::get('brands', [\App\Http\Controllers\Api\BrandController::class, 'index']
 
 // Reviews (public read)
 Route::get('products/{product}/reviews', [ReviewController::class, 'index']);
+
+// Newsletter (public)
+Route::prefix('newsletter')->name('newsletter.')->group(function () {
+    Route::post('subscribe',   [NewsletterController::class, 'subscribe'])->name('subscribe');
+    Route::post('unsubscribe', [NewsletterController::class, 'unsubscribe'])->name('unsubscribe');
+});
 
 // Serve uploaded product images from local storage
 // Needed for Railway/containerized deploys where public/storage symlink doesn't persist

@@ -169,7 +169,8 @@ class ProductController extends Controller
         $products = Product::active()
             ->featured()
             ->with(['brand', 'primaryImage'])
-            ->orderBy('sort_order')
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->limit(8)
             ->get();
 

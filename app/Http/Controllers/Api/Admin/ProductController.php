@@ -28,6 +28,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Events\NewProductAdded;
 use App\Models\Product;
 use App\Models\ActivityLog;
 use Illuminate\Http\JsonResponse;
@@ -107,6 +108,12 @@ class ProductController extends Controller
         ]);
 
         ActivityLog::record($product, 'created', ['name' => $product->name]);
+
+        // Notify newsletter subscribers only for products that are
+        // actually live (drafts/inactive products don't get broadcast).
+        if ($product->is_active) {
+            event(new NewProductAdded($product));
+        }
 
         return response()->json([
             'success' => true,

@@ -4,7 +4,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Category, ActivityLog};
+use App\Models\{Category, ActivityLog, Product};
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -76,6 +76,14 @@ class CategoryController extends Controller
     public function destroy(Category $category): JsonResponse
     {
         $name = $category->name;
+
+        // Detach every product (including soft-deleted ones) first so they
+        // become "uncategorized" (category_id = NULL) instead of blocking
+        // the delete with a foreign-key violation.
+        Product::withTrashed()
+            ->where('category_id', $category->id)
+            ->update(['category_id' => null]);
+
         $category->delete();
         ActivityLog::record($category, 'deleted', ['name' => $name]);
 
